@@ -9,8 +9,8 @@ return new class extends AbstractClickhouseMigration
     public function up(): void
     {
         $this->clickhouseClient->write(
-            <<<SQL
-                CREATE TABLE IF NOT EXISTS balance_history
+            <<<'SQL'
+                CREATE TABLE IF NOT EXISTS balance_histories
                 (
                     id UInt64,
                     account_id UInt64,

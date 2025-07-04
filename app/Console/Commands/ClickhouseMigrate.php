@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\Clickhouse\MigrateBalanceBatchToClickhouseJob;
+use App\Models\BalanceHistory;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class ClickhouseMigrate extends Command
 {
@@ -12,16 +13,31 @@ class ClickhouseMigrate extends Command
      *
      * @var string
      */
-    protected $signature = 'clickhouse:migrate';
+    protected $signature = 'balance:queue-migrate-to-clickhouse {--batch=1000}';
 
     protected $description = 'Create balance_histories table in ClickHouse';
-
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
+        $batchSize = (int) $this->option('batch', 1000);
+        $total = BalanceHistory::count();
+        $batches = (int) ceil($total / $batchSize);
 
+        $this->info("Total records: $total");
+        $this->info("Dispatching $batches jobs with batch size $batchSize...");
+
+        for ($i = 0; $i < $batches; $i++) {
+            $offset = $i * $batchSize;
+            MigrateBalanceBatchToClickhouseJob::dispatch($offset, $batchSize);
+
+            $this->line("→ Job dispatched for offset $offset");
+        }
+
+        $this->info('All jobs dispatched.');
+
+        return 0;
     }
 }
