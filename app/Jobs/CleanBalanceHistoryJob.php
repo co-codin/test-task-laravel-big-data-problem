@@ -2,26 +2,30 @@
 
 namespace App\Jobs;
 
+use App\Models\BalanceHistory;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 class CleanBalanceHistoryJob implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(protected array $ids, protected int $sleep = 1) {}
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
+    public function handle()
     {
-        //
+        if (empty($this->ids)) {
+            return;
+        }
+
+        DB::transaction(function () {
+            BalanceHistory::query()->whereIn('id', $this->ids)->delete();
+        });
+
+        sleep($this->sleep);
     }
 }
