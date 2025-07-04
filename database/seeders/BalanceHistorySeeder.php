@@ -31,7 +31,7 @@ class BalanceHistorySeeder extends Seeder
                     ];
 
                     if (count($batch) >= 1000) {
-                        DB::table('balance_history')->insert($batch);
+                        DB::table('balance_histories')->insert($batch);
                         $batch = [];
                     }
                 }
@@ -39,7 +39,7 @@ class BalanceHistorySeeder extends Seeder
         }
 
         if (!empty($batch)) {
-            DB::table('balance_history')->insert($batch);
+            DB::table('balance_histories')->insert($batch);
         }
     }
 }

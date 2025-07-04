@@ -20,8 +20,14 @@ logs:
 	$(DOCKER_COMPOSE) logs -f $(service)
 
 migrate:
-	@echo "Running Django migrations..."
 	$(DOCKER_COMPOSE) exec $(APP_SERVICE) php artisan migrate
+
+migrate-refresh:
+	$(DOCKER_COMPOSE) exec $(APP_SERVICE) php artisan migrate:refresh
 
 shell:
 	$(DOCKER_COMPOSE) exec $(APP_SERVICE) sh
+
+seed:
+	$(DOCKER_COMPOSE) exec $(APP_SERVICE) php artisan db:seed
+
