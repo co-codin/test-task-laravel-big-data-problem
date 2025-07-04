@@ -16,11 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('account_id');
             $table->unsignedBigInteger('currency_id');
             $table->decimal('amount', 36, 22);
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->nullable();
-            $table->index(['created_at']);
-            $table->index(['account_id', 'currency_id', 'created_at']);
             $table->timestamps();
+            $table->index(['account_id', 'currency_id', 'created_at']);
+            $table->index(['created_at']);
         });
     }
 
