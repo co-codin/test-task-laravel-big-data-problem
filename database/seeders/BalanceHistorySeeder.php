@@ -16,13 +16,11 @@ class BalanceHistorySeeder extends Seeder
         $startDate = $now->copy()->subMonths(2);
 
         $batch = [];
-        $id = 1;
 
         for ($date = $startDate; $date->lte($now); $date->addHour()) {
             foreach (range(1, 50) as $account) {
                 foreach (range(1, 5) as $currency) {
                     $batch[] = [
-                        'id'          => $id++,
                         'account_id'  => $account,
                         'currency_id' => $currency,
                         'amount'      => $faker->randomFloat(8, 0, 1000),
